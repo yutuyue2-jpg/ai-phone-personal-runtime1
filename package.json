@@ -1,0 +1,29 @@
+{
+  "name": "ai-phone-personal-runtime1",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "npm run db:migrations:apply && npm run secrets:ensure && wrangler deploy",
+    "db:migrations:apply": "wrangler d1 migrations apply DB --remote",
+    "secrets:ensure": "node ./scripts/ensure-runtime-secrets.mjs"
+  },
+  "cloudflare": {
+    "bindings": {
+      "SETUP_SECRET": {
+        "description": "从小手机设置页生成的个人云端连接码。部署后回到小手机填写 Worker URL，点击绑定即可换取访问 token。"
+      },
+      "WECHAT_ILINK_STATE_SECRET": {
+        "description": "微信扫码登录 state 的部署端加密密钥。模板部署时会自动生成并写入，一般不需要手填；只有本地 dev 才需要自己准备。"
+      },
+      "PERSONAL_RUNTIME_DATA_SECRET": {
+        "description": "个人 Runtime 的后台敏感配置加密密钥。模板部署时会自动生成并写入，用来加密存入 D1 的后台 AI key。"
+      }
+    }
+  },
+  "devDependencies": {
+    "web-push": "^3.6.7",
+    "wrangler": "^4.90.1"
+  }
+}
